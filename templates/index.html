@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CareBot</title>
+    <style>
+      body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; margin: 0; }
+      .chat-container { max-width: 420px; margin: 30px auto; background: #0f172a; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #1e293b; position: relative; }
+
+      .chat-header { background: linear-gradient(135deg, #1e293b, #0f766e); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+      .header-left { display: flex; align-items: center; gap: 10px; }
+      .header-icon { width: 34px; height: 34px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+      .header-text .title { font-weight: bold; font-size: 15px; }
+      .header-text .subtitle { font-size: 11px; color: #94a3b8; }
+      .header-btns { display: flex; gap: 6px; }
+      .header-btn { background: transparent; border: 1px solid #64748b; color: #cbd5e1; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 11px; }
+      .header-btn:hover { background: rgba(255,255,255,0.08); }
+
+      .disclaimer { font-size: 10.5px; color: #64748b; text-align: center; padding: 6px; background: #131c2e; border-bottom: 1px solid #1e293b; }
+
+      .chat-box { height: 380px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
+      .message-row { display: flex; align-items: flex-end; margin: 10px 0; gap: 8px; }
+      .message-row.user { flex-direction: row-reverse; }
+      .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+      .avatar.bot { background: #0f766e; }
+      .avatar.user { background: #3b82f6; }
+
+      .msg-col { display: flex; flex-direction: column; max-width: 72%; }
+      .message-row.user .msg-col { align-items: flex-end; }
+      .message { padding: 10px 14px; border-radius: 16px; line-height: 1.45; font-size: 14px; white-space: pre-line; }
+      .bot-bubble { background: #1e293b; color: #e2e8f0; border-bottom-left-radius: 4px; }
+      .user-bubble { background: #3b82f6; color: white; border-bottom-right-radius: 4px; }
+      .msg-time { font-size: 10px; color: #64748b; margin-top: 3px; padding: 0 4px; }
+
+      .typing-dots { display: flex; gap: 4px; padding: 12px 14px; }
+      .typing-dots span { width: 6px; height: 6px; background: #94a3b8; border-radius: 50%; animation: bounce 1.2s infinite ease-in-out; }
+      .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+      .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+      .input-area { display: flex; border-top: 1px solid #1e293b; }
+      .input-area input { flex: 1; padding: 13px; border: none; outline: none; background: #131c2e; color: #e2e8f0; font-size: 14px; }
+      .input-area input::placeholder { color: #64748b; }
+      .input-area button { background: #0f766e; color: white; border: none; padding: 0 22px; cursor: pointer; font-weight: 600; }
+      .input-area button:disabled { background: #475569; cursor: not-allowed; }
+
+      .history-panel { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #0f172a; padding: 15px; overflow-y: auto; }
+      .history-panel.open { display: block; }
+      .history-item { background: #1e293b; color: #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 13px; }
+      .history-item:hover { background: #334155; }
+      .history-item .time { color: #64748b; font-size: 11px; }
+      .back-btn { background: #0f766e; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
+      .no-history { color: #64748b; text-align: center; margin-top: 40px; }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="header-left">
+          <div class="header-icon">🩺</div>
+          <div class="header-text">
+            <div class="title">CareBot</div>
+            <div class="subtitle">AI Symptom Assistant</div>
+          </div>
+        </div>
+        <div class="header-btns">
+          <button class="header-btn" onclick="openHistory()">History</button>
+          <button class="header-btn" onclick="resetChat()">Reset</button>
+        </div>
+      </div>
+      <div class="disclaimer">Not a substitute for professional medical advice</div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Describe your symptoms...">
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
+      </div>
+
+      <div class="history-panel" id="historyPanel">
+        <button class="back-btn" onclick="closeHistory()">← Back to chat</button>
+        <div id="historyList"></div>
+      </div>
+    </div>
+
+    <script>
+      const chatBox = document.getElementById("chatBox");
+      const userInput = document.getElementById("userInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const historyPanel = document.getElementById("historyPanel");
+      const historyList = document.getElementById("historyList");
+
+      let currentConversation = [];
+
+      function currentTime() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function addMessage(text, sender, save = true) {
+        const row = document.createElement("div");
+        row.className = "message-row " + sender;
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar " + sender;
+        avatar.innerText = sender === "bot" ? "🤖" : "🧑";
+
+        const col = document.createElement("div");
+        col.className = "msg-col";
+
+        const msg = document.createElement("div");
+        msg.className = "message " + (sender === "bot" ? "bot-bubble" : "user-bubble");
+        msg.innerText = text;
+
+        const time = document.createElement("div");
+        time.className = "msg-time";
+        time.innerText = currentTime();
+
+        col.appendChild(msg);
+        col.appendChild(time);
+        row.appendChild(avatar);
+        row.appendChild(col);
+        chatBox.appendChild(row);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        if (save) currentConversation.push({ text, sender });
+      }
+
+      function showTypingIndicator() {
+        const row = document.createElement("div");
+        row.className = "message-row bot";
+        row.id = "typingRow";
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar bot";
+        avatar.innerText = "🤖";
+
+        const dots = document.createElement("div");
+        dots.className = "message bot-bubble typing-dots";
+        dots.innerHTML = "<span></span><span></span><span></span>";
+
+        row.appendChild(avatar);
+        row.appendChild(dots);
+        chatBox.appendChild(row);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const row = document.getElementById("typingRow");
+        if (row) row.remove();
+      }
+
+      function showWelcome() {
+        chatBox.innerHTML = "";
+        currentConversation = [];
+        addMessage("Welcome! I'm CareBot. How can I help you today?", "bot");
+      }
+
+      window.onload = showWelcome;
+
+      function saveCurrentConversationToHistory() {
+        if (currentConversation.length > 1) {
+          const allHistory = JSON.parse(localStorage.getItem("carebot_history") || "[]");
+          allHistory.unshift({
+            timestamp: new Date().toLocaleString(),
+            messages: currentConversation
+          });
+          localStorage.setItem("carebot_history", JSON.stringify(allHistory.slice(0, 20)));
+        }
+      }
+
+      async function resetChat() {
+        saveCurrentConversationToHistory();
+        await fetch("/reset", { method: "POST" });
+        showWelcome();
+        userInput.value = "";
+      }
+
+      function openHistory() {
+        const allHistory = JSON.parse(localStorage.getItem("carebot_history") || "[]");
+        historyList.innerHTML = "";
+
+        if (allHistory.length === 0) {
+          historyList.innerHTML = '<div class="no-history">No past conversations yet</div>';
+        } else {
+          allHistory.forEach((convo) => {
+            const item = document.createElement("div");
+            item.className = "history-item";
+            const preview = convo.messages.find(m => m.sender === "user");
+            item.innerHTML = `<div class="time">${convo.timestamp}</div><div>${preview ? preview.text : "Conversation"}</div>`;
+            item.onclick = () => viewHistoryConversation(convo);
+            historyList.appendChild(item);
+          });
+        }
+        historyPanel.classList.add("open");
+      }
+
+      function viewHistoryConversation(convo) {
+        chatBox.innerHTML = "";
+        convo.messages.forEach(m => addMessage(m.text, m.sender, false));
+        closeHistory();
+      }
+
+      function closeHistory() {
+        historyPanel.classList.remove("open");
+      }
+
+      function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async function sendMessage() {
+        const text = userInput.value.trim();
+        if (text === "") {
+          addMessage("Please type your symptoms first.", "bot");
+          return;
+        }
+
+        addMessage(text, "user");
+        userInput.value = "";
+        sendBtn.disabled = true;
+
+        showTypingIndicator();
+
+        try {
+          // Run the actual request and the minimum delay in parallel,
+          // so the wait never becomes longer than necessary
+          const [response] = await Promise.all([
+            fetch("/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: text })
+            }),
+            wait(2000 + Math.random() * 1000) // 2-3 second natural-feeling delay
+          ]);
+
+          if (!response.ok) throw new Error("Server error");
+          const data = await response.json();
+
+          removeTypingIndicator();
+          addMessage(data.reply, "bot");
+        } catch (error) {
+          removeTypingIndicator();
+          addMessage("Something went wrong. Please try again.", "bot");
+        } finally {
+          sendBtn.disabled = false;
+        }
+      }
+
+      userInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") sendMessage();
+      });
+    </script>
+  </body>
+</html>
