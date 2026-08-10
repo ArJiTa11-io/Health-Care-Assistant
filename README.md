@@ -33,24 +33,27 @@ CareBot is a full-stack AI/ML web application that helps users get a quick, prel
 - NIH Clinical Tables API (free, open, no key required)
 
 ## 📁 Project Structure
-'''
+## 📁 Project Structure
+
+```
 CareBot/
 │
-├── app.py # Main Flask server — routes, chat logic, API fallback
-├── model_training.py # Data cleaning, encoding, and model training script
-├── explore_data.py # Initial dataset exploration script
-├── model.pkl # Saved trained Decision Tree model
-├── symptoms_list.pkl # Saved list of 131 known symptoms (encoding order)
-├── .gitignore # Git ignore rules
-├── README.md # Project documentation
+├── app.py                     # Main Flask server — routes, chat logic, API fallback
+├── model_training.py          # Data cleaning, encoding, and model training script
+├── explore_data.py            # Initial dataset exploration script
+├── model.pkl                  # Saved trained Decision Tree model
+├── symptoms_list.pkl          # Saved list of 131 known symptoms (encoding order)
+├── .gitignore                 # Git ignore rules
+├── README.md                  # Project documentation
 │
 ├── dataset/
-│ ├── dataset.csv # Raw disease-symptom dataset (Kaggle)
-│ └── encoded_dataset.csv # Cleaned, one-hot encoded dataset
+│   ├── dataset.csv            # Raw disease-symptom dataset (Kaggle)
+│   └── encoded_dataset.csv    # Cleaned, one-hot encoded dataset
 │
 └── templates/
-└── index.html # Chat interface — UI, JS logic, styling
-'''
+    └── index.html             # Chat interface — UI, JS logic, styling
+```
+
 ## ⚙️ Prerequisites
 
 Before you begin, ensure you have the following installed:
