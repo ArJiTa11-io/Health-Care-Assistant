@@ -33,7 +33,6 @@ CareBot is a full-stack AI/ML web application that helps users get a quick, prel
 - NIH Clinical Tables API (free, open, no key required)
 
 ## 📁 Project Structure
-## 📁 Project Structure
 
 ```
 CareBot/
