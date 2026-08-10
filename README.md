@@ -33,6 +33,7 @@ CareBot is a full-stack AI/ML web application that helps users get a quick, prel
 - NIH Clinical Tables API (free, open, no key required)
 
 ## 📁 Project Structure
+'''
 CareBot/
 │
 ├── app.py # Main Flask server — routes, chat logic, API fallback
@@ -49,7 +50,7 @@ CareBot/
 │
 └── templates/
 └── index.html # Chat interface — UI, JS logic, styling
-
+'''
 ## ⚙️ Prerequisites
 
 Before you begin, ensure you have the following installed:
@@ -172,5 +173,9 @@ Found a bug or have a suggestion? Open an [issue](../../issues) on this reposito
 ## 👩‍💻 Author
 
 **Arjita**
-GitHub: [@ArJiTa11-io](https://github.com/ArJiTa11-io)
-LinkedIn:[@Arjita] (www.linkedin.com/in/arjita-pandey)
+## 👩‍💻 Author
+
+**Arjita**
+
+- GitHub: [@ArJiTa11-io](https://github.com/ArJiTa11-io)
+- LinkedIn: [Arjita Pandey](https://www.linkedin.com/in/arjita-pandey)
