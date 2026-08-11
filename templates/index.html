@@ -88,7 +88,22 @@
       .history-search::placeholder {
         color: #64748b;
       }
-
+      .search-wrap {
+  display: flex;
+  gap: 6px;
+ 
+}
+.search-btn {
+  background: #0f766e;
+  border: none;
+  border-radius: 6px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.search-btn:hover {
+  background: #0d9488;
+}
       .history-scroll {
         flex: 1;
         overflow-y: auto;
@@ -372,15 +387,17 @@
         </div>
         <button class="new-chat-btn" onclick="resetChat()">+ New Chat</button>
         <div class="history-label">History</div>
-        <input
-          type="text"
-          id="historySearch"
-          class="history-search"
-          placeholder="Search past conversations..."
-          oninput="filterHistory()"
-        />
-        <div class="history-scroll" id="historyList"></div>
-      </div>
+<div class="search-wrap">
+  <input
+    type="text"
+    id="historySearch"
+    class="history-search"
+    placeholder="Search past conversations..."
+    oninput="filterHistory()"
+  />
+  <button class="search-btn" onclick="filterHistory()">🔍</button>
+</div>
+<div class="history-scroll" id="historyList"></div>
 
       <div class="main">
         <div class="chat-header">

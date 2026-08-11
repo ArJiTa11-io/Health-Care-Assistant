@@ -46,15 +46,19 @@ def extract_symptoms(user_message):
 def get_bot_reply(user_message):
     user_message = user_message.lower().strip()
 
-    if user_message == "":
-        return "Please tell me your symptoms so I can help."
-
-    # Track symptoms across the whole conversation, not just this message
     if "collected_symptoms" not in session:
         session["collected_symptoms"] = []
 
     new_symptoms = extract_symptoms(user_message)
-    all_collected = set(session["collected_symptoms"]) | new_symptoms
+    previously_collected = set(session["collected_symptoms"])
+
+    # If the new message shares nothing with what's already collected,
+    # treat it as a fresh symptom check instead of blending unrelated symptoms
+    if previously_collected and new_symptoms and not (previously_collected & new_symptoms):
+        all_collected = new_symptoms
+    else:
+        all_collected = previously_collected | new_symptoms
+
     session["collected_symptoms"] = list(all_collected)
 
     urgent_warning = ""
