@@ -14,20 +14,121 @@
         font-family: "Segoe UI", Arial, sans-serif;
         background: #0f172a;
       }
-
-      .chat-container {
+      .app {
+        display: flex;
         height: 100vh;
         width: 100vw;
-        background: #0f172a;
-        display: flex;
-        flex-direction: column;
-        position: relative;
+        overflow: hidden;
       }
 
+      .sidebar {
+        width: 280px;
+        background: #131c2e;
+        border-right: 1px solid #1e293b;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        transition: margin-left 0.25s ease;
+      }
+      .sidebar-header {
+        padding: 16px;
+        border-bottom: 1px solid #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar-header .icon {
+        font-size: 22px;
+      }
+      .sidebar-header .title {
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .sidebar-header .subtitle {
+        color: #64748b;
+        font-size: 11px;
+      }
+
+      .new-chat-btn {
+        margin: 14px;
+        padding: 10px;
+        background: #0f766e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .new-chat-btn:hover {
+        background: #0d9488;
+      }
+
+      .history-label {
+        padding: 0 16px;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 8px;
+        margin-bottom: 6px;
+      }
+
+      .history-search {
+        margin: 0 14px 10px 14px;
+        padding: 8px 12px;
+        border: 1px solid #1e293b;
+        border-radius: 6px;
+        background: #1e293b;
+        color: #e2e8f0;
+        font-size: 12px;
+        outline: none;
+      }
+      .history-search::placeholder {
+        color: #64748b;
+      }
+
+      .history-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 12px;
+      }
+      .history-item {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .history-item:hover {
+        background: #334155;
+      }
+      .history-item .time {
+        color: #64748b;
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
+      .no-history {
+        color: #64748b;
+        text-align: center;
+        margin-top: 30px;
+        font-size: 13px;
+        padding: 0 10px;
+      }
+
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
       .chat-header {
         background: linear-gradient(135deg, #1e293b, #0f766e);
         color: white;
-        padding: 14px 24px;
+        padding: 14px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -36,6 +137,15 @@
         display: flex;
         align-items: center;
         gap: 10px;
+      }
+      .menu-btn {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 4px;
       }
       .header-icon {
         width: 34px;
@@ -55,11 +165,7 @@
         font-size: 11px;
         color: #94a3b8;
       }
-      .header-btns {
-        display: flex;
-        gap: 6px;
-      }
-      .header-btn {
+      .reset-btn {
         background: transparent;
         border: 1px solid #64748b;
         color: #cbd5e1;
@@ -68,7 +174,7 @@
         cursor: pointer;
         font-size: 12px;
       }
-      .header-btn:hover {
+      .reset-btn:hover {
         background: rgba(255, 255, 255, 0.08);
       }
 
@@ -84,21 +190,20 @@
       .chat-box {
         flex: 1;
         overflow-y: auto;
-        padding: 24px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center;
       }
       .message-row {
         display: flex;
         align-items: flex-end;
         margin: 10px 0;
         gap: 8px;
-        width: 100%;
-        max-width: 720px;
+        max-width: 700px;
       }
       .message-row.user {
         flex-direction: row-reverse;
+        margin-left: auto;
       }
       .avatar {
         width: 32px;
@@ -120,7 +225,7 @@
       .msg-col {
         display: flex;
         flex-direction: column;
-        max-width: 75%;
+        max-width: 100%;
       }
       .message-row.user .msg-col {
         align-items: flex-end;
@@ -182,19 +287,14 @@
 
       .input-area {
         display: flex;
-        justify-content: center;
         border-top: 1px solid #1e293b;
-        padding: 16px 24px;
+        padding: 14px 20px;
         background: #0f172a;
       }
-      .input-inner {
-        display: flex;
-        width: 100%;
-        max-width: 720px;
-        gap: 10px;
-      }
-      .input-inner input {
+      .input-area input {
         flex: 1;
+        max-width: 700px;
+        margin: 0 auto 0 0;
         padding: 13px 16px;
         border: none;
         outline: none;
@@ -203,108 +303,113 @@
         border-radius: 24px;
         font-size: 14px;
       }
-      .input-inner input::placeholder {
+      .input-area .send-wrap {
+        max-width: 700px;
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        gap: 10px;
+      }
+      .input-area input::placeholder {
         color: #64748b;
       }
-      .input-inner button {
+      .input-area button.send-btn {
         background: #0f766e;
         color: white;
         border: none;
-        padding: 0 24px;
+        padding: 0 22px;
         cursor: pointer;
         font-weight: 600;
         border-radius: 24px;
       }
-      .input-inner button:disabled {
+      .input-area button.send-btn:disabled {
         background: #475569;
         cursor: not-allowed;
       }
 
-      .history-panel {
+      .overlay {
         display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #0f172a;
-        padding: 20px;
-        overflow-y: auto;
       }
-      .history-panel.open {
-        display: block;
-      }
-      .history-item {
-        background: #1e293b;
-        color: #e2e8f0;
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        cursor: pointer;
-        font-size: 13px;
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .history-item:hover {
-        background: #334155;
-      }
-      .history-item .time {
-        color: #64748b;
-        font-size: 11px;
-      }
-      .back-btn {
-        background: #0f766e;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-bottom: 12px;
-        display: block;
-      }
-      .no-history {
-        color: #64748b;
-        text-align: center;
-        margin-top: 40px;
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          z-index: 20;
+          margin-left: -280px;
+        }
+        .sidebar.open {
+          margin-left: 0;
+        }
+        .menu-btn {
+          display: inline-block;
+        }
+        .overlay {
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 15;
+        }
+        .overlay.show {
+          display: block;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="header-left">
-          <div class="header-icon">🩺</div>
-          <div class="header-text">
+    <div class="app">
+      <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="icon">🩺</div>
+          <div>
             <div class="title">CareBot</div>
             <div class="subtitle">AI Symptom Assistant</div>
           </div>
         </div>
-        <div class="header-btns">
-          <button class="header-btn" onclick="openHistory()">History</button>
-          <button class="header-btn" onclick="resetChat()">Reset</button>
-        </div>
-      </div>
-      <div class="disclaimer">
-        Not a substitute for professional medical advice
-      </div>
-      <div class="chat-box" id="chatBox"></div>
-      <div class="input-area">
-        <div class="input-inner">
-          <input
-            type="text"
-            id="userInput"
-            placeholder="Describe your symptoms..."
-          />
-          <button id="sendBtn" onclick="sendMessage()">Send</button>
-        </div>
+        <button class="new-chat-btn" onclick="resetChat()">+ New Chat</button>
+        <div class="history-label">History</div>
+        <input
+          type="text"
+          id="historySearch"
+          class="history-search"
+          placeholder="Search past conversations..."
+          oninput="filterHistory()"
+        />
+        <div class="history-scroll" id="historyList"></div>
       </div>
 
-      <div class="history-panel" id="historyPanel">
-        <button class="back-btn" onclick="closeHistory()">
-          ← Back to chat
-        </button>
-        <div id="historyList"></div>
+      <div class="main">
+        <div class="chat-header">
+          <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="header-icon">🩺</div>
+            <div class="header-text">
+              <div class="title">CareBot</div>
+              <div class="subtitle">AI Symptom Assistant</div>
+            </div>
+          </div>
+          <button class="reset-btn" onclick="resetChat()">Reset</button>
+        </div>
+        <div class="disclaimer">
+          Not a substitute for professional medical advice
+        </div>
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-area">
+          <div class="send-wrap">
+            <input
+              type="text"
+              id="userInput"
+              placeholder="Describe your symptoms..."
+            />
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -312,16 +417,27 @@
       const chatBox = document.getElementById("chatBox");
       const userInput = document.getElementById("userInput");
       const sendBtn = document.getElementById("sendBtn");
-      const historyPanel = document.getElementById("historyPanel");
       const historyList = document.getElementById("historyList");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
 
       let currentConversation = [];
+      let allHistoryData = [];
 
       function currentTime() {
         return new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         });
+      }
+
+      function toggleSidebar() {
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+      }
+      function closeSidebar() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
       }
 
       function addMessage(text, sender, save = true) {
@@ -383,7 +499,10 @@
         addMessage("Welcome! I'm CareBot. How can I help you today?", "bot");
       }
 
-      window.onload = showWelcome;
+      window.onload = function () {
+        showWelcome();
+        renderHistoryList();
+      };
 
       function saveCurrentConversationToHistory() {
         if (currentConversation.length > 1) {
@@ -406,38 +525,61 @@
         await fetch("/reset", { method: "POST" });
         showWelcome();
         userInput.value = "";
+        renderHistoryList();
+        closeSidebar();
       }
 
-      function openHistory() {
-        const allHistory = JSON.parse(
+      function renderHistoryList() {
+        allHistoryData = JSON.parse(
           localStorage.getItem("carebot_history") || "[]",
         );
+        const searchBox = document.getElementById("historySearch");
+        if (searchBox) searchBox.value = "";
+        renderHistoryItems(allHistoryData);
+      }
+
+      function renderHistoryItems(historyArray) {
         historyList.innerHTML = "";
 
-        if (allHistory.length === 0) {
+        if (historyArray.length === 0) {
           historyList.innerHTML =
-            '<div class="no-history">No past conversations yet</div>';
-        } else {
-          allHistory.forEach((convo) => {
-            const item = document.createElement("div");
-            item.className = "history-item";
-            const preview = convo.messages.find((m) => m.sender === "user");
-            item.innerHTML = `<div class="time">${convo.timestamp}</div><div>${preview ? preview.text : "Conversation"}</div>`;
-            item.onclick = () => viewHistoryConversation(convo);
-            historyList.appendChild(item);
-          });
+            '<div class="no-history">No conversations found</div>';
+          return;
         }
-        historyPanel.classList.add("open");
+
+        historyArray.forEach((convo) => {
+          const item = document.createElement("div");
+          item.className = "history-item";
+          const preview = convo.messages.find((m) => m.sender === "user");
+          item.innerHTML = `<div class="time">${convo.timestamp}</div><div>${preview ? preview.text : "Conversation"}</div>`;
+          item.onclick = () => viewHistoryConversation(convo);
+          historyList.appendChild(item);
+        });
+      }
+
+      function filterHistory() {
+        const query = document
+          .getElementById("historySearch")
+          .value.toLowerCase()
+          .trim();
+
+        if (query === "") {
+          renderHistoryItems(allHistoryData);
+          return;
+        }
+
+        const filtered = allHistoryData.filter((convo) =>
+          convo.messages.some((m) => m.text.toLowerCase().includes(query)),
+        );
+
+        renderHistoryItems(filtered);
       }
 
       function viewHistoryConversation(convo) {
         chatBox.innerHTML = "";
-        convo.messages.forEach((m) => addMessage(m.text, m.sender, false));
-        closeHistory();
-      }
-
-      function closeHistory() {
-        historyPanel.classList.remove("open");
+        currentConversation = [];
+        convo.messages.forEach((m) => addMessage(m.text, m.sender));
+        closeSidebar();
       }
 
       function wait(ms) {

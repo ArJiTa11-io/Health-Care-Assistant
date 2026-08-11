@@ -29,12 +29,18 @@ URGENT_SYMPTOMS = {"chest_pain", "breathlessness", "coma", "loss_of_balance", "s
 
 def extract_symptoms(user_message):
     matched = set()
-    for phrase, mapped in symptom_synonyms.items():
-        if phrase in user_message:
-            matched.update(mapped)
+
+    # Step 1: exact symptom matches first (most specific/reliable)
     for symptom in all_symptoms:
         if symptom.replace("_", " ") in user_message:
             matched.add(symptom)
+
+    # Step 2: synonym phrases — only add if none of their target symptoms are already covered
+    for phrase, mapped in symptom_synonyms.items():
+        if phrase in user_message:
+            if not any(m in matched for m in mapped):
+                matched.update(mapped)
+
     return matched
 
 def get_bot_reply(user_message):
