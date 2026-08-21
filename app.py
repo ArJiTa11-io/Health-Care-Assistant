@@ -167,8 +167,8 @@ def get_bot_reply(user_message):
 
             general_tips = (
                 "• Monitor your symptoms and note any changes over time.\n"
-                "• Stay hydrated and get adequate rest.\n"
-                "• Avoid self-medicating without professional guidance."
+                "• Avoid activities that worsen your discomfort until you're evaluated.\n"
+                "• Avoid self-medicating or self-treating without professional guidance."
             )
 
             return (f"Possible related conditions: {condition_list}.\n\n"
